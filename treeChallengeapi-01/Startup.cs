@@ -28,14 +28,14 @@ namespace treeChallengeapi_01
 
             services.AddDbContext<TreeChallengeDbContext>(contextOptions =>
             {
-                //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-                //{
+                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                {
                     contextOptions.UseSqlServer(Configuration.GetConnectionString("AzureDbContext"));
-                //}
-                //else
-                //{
-                //    contextOptions.UseSqlServer(Configuration.GetConnectionString("LocalDbContext"));
-                //}
+                }
+                else
+                {
+                    contextOptions.UseSqlServer(Configuration.GetConnectionString("LocalDbContext"));
+                }
             });
 
             services.AddTransient<IFactoryService, FactoryService>();
