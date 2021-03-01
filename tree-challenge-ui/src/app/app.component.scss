@@ -6,3 +6,7 @@ body {
   margin: 0;
   padding: 30px;
 }
+
+router-outlet { 
+  display: none;
+}
