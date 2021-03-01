@@ -28,14 +28,7 @@ namespace treeChallengeapi_01
 
             services.AddDbContext<TreeChallengeDbContext>(contextOptions =>
             {
-                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-                {
-                    contextOptions.UseSqlServer(Configuration.GetConnectionString("AzureDbContext"));
-                }
-                else
-                {
-                    contextOptions.UseSqlServer(Configuration.GetConnectionString("LocalDbContext"));
-                }
+                contextOptions.UseSqlServer(Configuration.GetConnectionString("TreeChallengeDbContext"));
             });
 
             services.AddTransient<IFactoryService, FactoryService>();
@@ -53,7 +46,10 @@ namespace treeChallengeapi_01
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:4200", "https://treechallenge-01.azurewebsites.net");
+                    .WithOrigins(
+                        "http://localhost:4200", 
+                        "https://treechallenge-01.azurewebsites.net",
+                        "http://treechallenge-01.azurewebsites.net");
             }));
         }
 
