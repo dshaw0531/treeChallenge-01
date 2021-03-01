@@ -4,5 +4,6 @@ export interface FlatNode {
   name: string;
   level: number;
   showButtons: boolean;
-  id: number
+  id: number;
+  factoryId: number;
 }

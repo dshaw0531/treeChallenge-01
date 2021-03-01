@@ -12,7 +12,7 @@
         <button *ngIf=node.showButtons mat-raised-button color="warn" (click)="deleteFactory(node.id)" class="factory-button">Delete Factory</button>
         <button *ngIf=node.showButtons mat-raised-button color="accent" (click)="openNameDialog(node.id, node.name)" class="factory-button">Edit Factory Name</button>
         <button *ngIf=node.showButtons mat-raised-button color="primary" (click)="openCollectInstructionsDialog(node.id, node.name)" class="factory-button">Generate Child Nodes</button>
-        <button *ngIf="!node.showButtons && node.id > 0" mat-mini-fab color="warn" matTooltip="Delete Child Node" (click)="deleteChildNode(node.id)" class="factory-button"><mat-icon>close</mat-icon></button>
+        <button *ngIf="!node.showButtons && node.id > 0" mat-mini-fab color="warn" matTooltip="Delete Child Node" (click)="deleteChildNode(node.factoryId, node.id)" class="factory-button"><mat-icon>close</mat-icon></button>
       </div>
     </mat-tree-node>
     <mat-tree-node class="tree-node" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>

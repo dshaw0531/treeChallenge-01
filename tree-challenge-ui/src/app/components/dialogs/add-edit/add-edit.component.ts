@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FactoryService } from 'src/app/services/factory-service/factory.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -16,7 +15,6 @@ export class AddEditComponent implements OnInit {
   valid: boolean = true;
 
   constructor(
-    private factoryService: FactoryService,
     private fb: FormBuilder,
     private diaglogRef: MatDialogRef<AddEditComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
@@ -28,31 +26,18 @@ export class AddEditComponent implements OnInit {
 
   ngOnInit(){
     this.form = this.fb.group({
+      id: this.factoryId,
       name: [this.name,[Validators.required]]
     })
   }
 
   close(){
-    this.diaglogRef.close()
+    this.diaglogRef.close();
   }
 
   save(){
     if(this.form.valid) {
-      if (this.factoryId !== undefined) {
-        this.editFactory(this.factoryId, this.form.value.name)
-      } else {
-        this.addFactory(this.form.value.name);
-      }
-
-      this.close();
+      this.diaglogRef.close({ event: 'close', id: this.form.value.id, name: this.form.value.name });
     }
-  }
-
-  addFactory(name: string){
-    this.factoryService.addFactory(name).subscribe();
-  }
-
-  editFactory(id: number, newName: string){
-    this.factoryService.editFactory(id, newName).subscribe();
   }
 }

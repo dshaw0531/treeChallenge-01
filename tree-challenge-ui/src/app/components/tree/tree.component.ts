@@ -15,6 +15,11 @@ import { SignalRService } from 'src/app/services/signal-r-service/signal-r.servi
   styleUrls: ['./tree.component.scss']
 })
 export class TreeComponent implements OnInit {
+  dialogId: number = 0;
+  dialogName: string = '';
+  generatedParentId: number = 0;
+  deletedParentId: number = 0;
+  instructions: any;
 
   private _transformer = (node: TreeNode, level: number) => {
     return {
@@ -22,7 +27,8 @@ export class TreeComponent implements OnInit {
       name: node.name,
       level: level,
       showButtons: node.factoryId === undefined && node.id > 0,
-      id: node.id
+      id: node.id,
+      factoryId: (node.factoryId === undefined) ? 0 : node.factoryId
     };
   }
 
@@ -49,12 +55,26 @@ export class TreeComponent implements OnInit {
   }
 
   getFactoryList(){
-    this.factoryService.getFactories().subscribe(factories => 
-      { 
+    this.factoryService.getFactories().subscribe(factories => {
         this.dataSource.data = [{ id: 0, name: "Root",  childNodes: factories}];
         this.treeControl.expand(this.treeControl.dataNodes[0]);
+
+        if (this.generatedParentId != null) {
+          this.expand(this.generatedParentId);
+          this.generatedParentId = 0;
+        };
+
+        if (this.deletedParentId != null) {
+          this.expand(this.deletedParentId);
+          this.deletedParentId = 0;
+        };
       });
-  };
+  }
+
+  expand(parentId: any) {
+    let index = this.treeControl.dataNodes.map(function(x) {return x.id;}).indexOf(parentId);
+    this.treeControl.expand(this.treeControl.dataNodes[index]);
+  }
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
 
@@ -62,8 +82,9 @@ export class TreeComponent implements OnInit {
     this.factoryService.deleteFactory(id).subscribe();
   }
 
-  deleteChildNode(id: number){
-    this.factoryService.deleteChildNode(id).subscribe();
+  deleteChildNode(factoryId: number, childId: number){
+    this.deletedParentId = factoryId;
+    this.factoryService.deleteChildNode(childId).subscribe();
   }
 
   openNameDialog(factoryId?: number, currentName?: string) {
@@ -74,9 +95,20 @@ export class TreeComponent implements OnInit {
         id: factoryId,
         title: factoryId === undefined ? "Add Factory" : "Edit Factory",
         currentName: currentName
-      }
+      };
 
-      this.dialog.open(AddEditComponent, dialogConfig);
+      const dialogRef = this.dialog.open(AddEditComponent, dialogConfig);
+
+      dialogRef.afterClosed().subscribe(result => {
+        this.dialogId = result?.id;
+        this.dialogName = result?.name;
+        
+        if (this.dialogId !== null && this.dialogName !== undefined) {
+          this.editFactory(this.dialogId, this.dialogName);
+        } else if (this.dialogName !== undefined) {
+          this.addFactory(this.dialogName);
+        };
+      });
   }
 
   openCollectInstructionsDialog(factoryId?: number, currentName?: string) {
@@ -86,8 +118,25 @@ export class TreeComponent implements OnInit {
     dialogConfig.data = {
       id: factoryId,
       title: currentName
-    }
+    };
 
-    this.dialog.open(CollectInstructionsComponent, dialogConfig);
-}
+    const dialogRef = this.dialog.open(CollectInstructionsComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.generatedParentId = result?.id;
+      this.instructions = result?.instructions;
+      
+      if (this.generatedParentId !== null && this.dialogName !== undefined) {
+        this.factoryService.generateChildren(this.generatedParentId, this.instructions).subscribe();
+      };
+    });
+  }
+
+  addFactory(name: string){
+    this.factoryService.addFactory(name).subscribe();
+  }
+
+  editFactory(id: number, newName: string){
+    this.factoryService.editFactory(id, newName).subscribe();
+  }
 }
