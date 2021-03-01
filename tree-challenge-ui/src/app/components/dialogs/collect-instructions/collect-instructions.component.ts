@@ -3,7 +3,6 @@ import { FactoryService } from 'src/app/services/factory-service/factory.service
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenerationInstructions } from 'src/app/models/generation-instructions-model';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-collect-instructions',
@@ -14,9 +13,7 @@ export class CollectInstructionsComponent implements OnInit {
   form: any;
   title: string;
   factoryId: number;
-  subscription: Subscription | undefined;
   
-
   constructor(
     private factoryService: FactoryService,
     private fb: FormBuilder,
@@ -30,9 +27,9 @@ export class CollectInstructionsComponent implements OnInit {
   ngOnInit(){
     this.form = this.fb.group({
       factoryId: [this.factoryId,[]],
-      numberOfChildren: ['',[Validators.required, Validators.max(15),Validators.pattern("^[0-9]*$")]],
-      upperLimit: ['',[Validators.required,Validators.pattern("^[0-9]*$")]],
-      lowerLimit: ['',[Validators.required,Validators.pattern("^[0-9]*$")]],
+      numberOfChildren: ['',[Validators.required, Validators.max(15), Validators.min(1),Validators.pattern("^[0-9]*$")]],
+      upperLimit: ['',[Validators.required,Validators.min(0),Validators.pattern("^[0-9]*$")]],
+      lowerLimit: ['',[Validators.required,Validators.min(0),Validators.pattern("^[0-9]*$")]],
     })
     
     this.subscribeLimitChanges();
@@ -57,7 +54,7 @@ setValidators(upperLimitControl: any, lowerLimitControl:any) {
   );
 
   lowerLimitControl.setValidators(
-    [Validators.required, Validators.max(upperLimitControl.value), Validators.pattern("^[0-9]*$")]
+    [Validators.required, Validators.min(0), Validators.max(upperLimitControl.value), Validators.pattern("^[0-9]*$")]
   );
 
   this.validateLimits(upperLimitControl, lowerLimitControl);
@@ -81,10 +78,8 @@ validateLimits(upperLimitControl: any, lowerLimitControl: any): void{
       instructions.numberOfChildren = this.form.value.numberOfChildren;
       instructions.upperLimit = this.form.value.upperLimit;
       instructions.lowerLimit = this.form.value.lowerLimit;
-      
-      this.factoryService.generateChildren(this.factoryId, instructions).subscribe();
 
-      this.close();
+      this.diaglogRef.close({ event: 'close', id: this.factoryId, instructions: instructions });
     }
   }
 }
