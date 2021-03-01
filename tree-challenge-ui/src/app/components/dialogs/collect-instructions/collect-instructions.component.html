@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Enter Parameters to Generate Children for {{this.title}}</h2>
-<mat-dialog-content [formGroup]="form">
+<mat-dialog-content [formGroup]="form" (keydown.enter)="save()">
     <div class="input-div">
         <mat-form-field color="accent">
             <input matInput
@@ -63,6 +63,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button color="secondary" (click)="close()" class="close-button">Cancel</button>
     <button mat-raised-button color="primary" (click)="save()" class="close-button">Generate</button>
+    <button mat-raised-button color="secondary" (click)="close()" class="close-button">Cancel</button>
 </mat-dialog-actions>
