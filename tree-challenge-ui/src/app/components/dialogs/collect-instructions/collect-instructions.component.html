@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Enter Parameters to Generate Children for {{this.title}}</h2>
+<mat-dialog-content [formGroup]="form">
+    <div class="input-div">
+        <mat-form-field color="accent">
+            <input matInput
+                    placeholder="Number of Child Nodes"
+                    formControlName="numberOfChildren"
+                    autocomplete="off">
+            <mat-error *ngIf="!this.form.value.numberOfChildren">
+                Number of Children is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="this.form.value.numberOfChildren > 15">
+                Must be less than or equal to 15
+            </mat-error>
+            <mat-error *ngIf="this.form.get('numberOfChildren').hasError('pattern')">
+                Must be a number
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="input-div">
+        <mat-form-field color="accent">
+            <input matInput
+                    placeholder="Upper Limit"
+                    formControlName="upperLimit"
+                    autocomplete="off">
+            <mat-error *ngIf="!this.form.value.upperLimit">
+                Upper Limit is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="!this.form.valid && this.limitsError">
+                Must be more than lower limit
+            </mat-error>
+            <mat-error *ngIf="this.form.get('upperLimit').hasError('pattern')">
+                Must be a number
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="input-div">
+        <mat-form-field color="accent">
+            <input matInput
+                    placeholder="Lower Limit"
+                    formControlName="lowerLimit"
+                    autocomplete="off">
+            <mat-error *ngIf="!this.form.value.lowerLimit">
+                Lower Limit is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="!this.form.valid && this.limitsError">
+                Must be less than upper limit
+            </mat-error>
+            <mat-error *ngIf="this.form.get('lowerLimit').hasError('pattern')">
+                Must be a number
+            </mat-error>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button color="secondary" (click)="close()" class="close-button">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()" class="close-button">Generate</button>
+</mat-dialog-actions>

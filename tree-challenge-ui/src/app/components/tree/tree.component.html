@@ -1,0 +1,35 @@
+<div>
+  <button mat-raised-button color="primary" (click)="openNameDialog()" class="addfactory">Add New Factory</button>
+</div>
+<div class="tree">
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node class="tree-node" *matTreeNodeDef="let node" matTreeNodePadding>
+      <div class="label">
+        <button mat-icon-button disabled></button>
+        {{node.name}}
+      </div>
+      <div class="button-row">
+        <button *ngIf=node.showButtons mat-raised-button color="warn" (click)="deleteFactory(node.id)" class="factory-button">Delete Factory</button>
+        <button *ngIf=node.showButtons mat-raised-button color="accent" (click)="openNameDialog(node.id, node.name)" class="factory-button">Edit Factory Name</button>
+        <button *ngIf=node.showButtons mat-raised-button color="primary" (click)="openCollectInstructionsDialog(node.id, node.name)" class="factory-button">Generate Child Nodes</button>
+        <button *ngIf="!node.showButtons && node.id > 0" mat-mini-fab color="warn" matTooltip="Delete Child Node" (click)="deleteChildNode(node.id)" class="factory-button"><mat-icon>close</mat-icon></button>
+      </div>
+    </mat-tree-node>
+    <mat-tree-node class="tree-node" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+      <div class="label">
+        <button mat-icon-button matTreeNodeToggle
+                [attr.aria-label]="'Toggle ' + node.name">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        {{node.name}}
+      </div>
+      <div class="button-row">
+        <button *ngIf=node.showButtons mat-raised-button color="warn" (click)="deleteFactory(node.id)" class="factory-button">Delete Factory</button>
+        <button *ngIf=node.showButtons mat-raised-button color="accent" (click)="openNameDialog(node.id, node.name)" class="factory-button">Edit Factory Name</button>
+        <button *ngIf=node.showButtons mat-raised-button color="primary" (click)="openCollectInstructionsDialog(node.id, node.name)" class="factory-button">Generate Child Nodes</button>
+      </div>
+    </mat-tree-node>
+  </mat-tree>
+</div>

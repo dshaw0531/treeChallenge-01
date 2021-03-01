@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{this.title}}</h2>
+<mat-dialog-content [formGroup]="form">
+    <mat-form-field color="accent">
+        <input matInput 
+                placeholder="Factory Name"
+                formControlName="name"
+                autocomplete="off">
+        <mat-error *ngIf="!this.form.value.name">
+            Factory Name is <strong>required</strong>
+        </mat-error>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button color="secondary" (click)="close()" class="close-button">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" (click)="save()" class="close-button">Save</button>
+</mat-dialog-actions>
