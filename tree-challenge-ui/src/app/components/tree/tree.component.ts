@@ -103,7 +103,7 @@ export class TreeComponent implements OnInit {
         this.dialogId = result?.id;
         this.dialogName = result?.name;
         
-        if (this.dialogId !== null && this.dialogName !== undefined) {
+        if (this.dialogId != null && this.dialogName != null) {
           this.editFactory(this.dialogId, this.dialogName);
         } else if (this.dialogName !== undefined) {
           this.addFactory(this.dialogName);
@@ -126,7 +126,7 @@ export class TreeComponent implements OnInit {
       this.generatedParentId = result?.id;
       this.instructions = result?.instructions;
       
-      if (this.generatedParentId !== null && this.dialogName !== undefined) {
+      if (this.generatedParentId != null && this.dialogName != null) {
         this.factoryService.generateChildren(this.generatedParentId, this.instructions).subscribe();
       };
     });
