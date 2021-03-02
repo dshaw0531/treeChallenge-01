@@ -59,7 +59,7 @@ namespace TreeChallengeAPI.Services
 
         public async Task<List<FactoryModel>> GetFactoriesWithChildNodes()
         {
-            var factories = await _treeChallengeDbContext.Factory.Include(g => g.ChildNodes.OrderBy(v => v.Name)).ToListAsync();
+            var factories = await _treeChallengeDbContext.Factory.Include(g => g.ChildNodes.OrderBy(v => Convert.ToInt32(v.Name))).ToListAsync();
             return factories;
         }
 
