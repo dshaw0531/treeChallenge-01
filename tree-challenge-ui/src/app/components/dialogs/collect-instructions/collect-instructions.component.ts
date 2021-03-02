@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FactoryService } from 'src/app/services/factory-service/factory.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenerationInstructions } from 'src/app/models/generation-instructions-model';
@@ -13,9 +12,9 @@ export class CollectInstructionsComponent implements OnInit {
   form: any;
   title: string;
   factoryId: number;
+  limitsError: boolean = false;
   
   constructor(
-    private factoryService: FactoryService,
     private fb: FormBuilder,
     private diaglogRef: MatDialogRef<CollectInstructionsComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
@@ -35,37 +34,29 @@ export class CollectInstructionsComponent implements OnInit {
     this.subscribeLimitChanges();
   }
 
-subscribeLimitChanges() {
-  let upperLimitControl = <FormControl>this.form.get('upperLimit');
-  let lowerLimitControl = <FormControl>this.form.get('lowerLimit');
+  subscribeLimitChanges() {
+    let upperLimitControl = <FormControl>this.form.get('upperLimit');
+    let lowerLimitControl = <FormControl>this.form.get('lowerLimit');
 
-  upperLimitControl.valueChanges.subscribe(v => {
-    this.setValidators(upperLimitControl, lowerLimitControl);
-  });
+    upperLimitControl.valueChanges.subscribe(v => {
+      this.setValidators(upperLimitControl, lowerLimitControl);
+    });
 
-  lowerLimitControl.valueChanges.subscribe(v => {
-    this.setValidators(upperLimitControl, lowerLimitControl);
-  });
-}
+    lowerLimitControl.valueChanges.subscribe(v => {
+      this.setValidators(upperLimitControl, lowerLimitControl);
+    });
+  }
 
-setValidators(upperLimitControl: any, lowerLimitControl:any) {
-  upperLimitControl.setValidators(
-    [Validators.required, Validators.min(lowerLimitControl.value), Validators.pattern("^[0-9]*$")]
-  );
+  setValidators(upperLimitControl: any, lowerLimitControl:any) {
+    upperLimitControl.setValidators(
+      [Validators.required, Validators.min(lowerLimitControl.value), Validators.pattern("^[0-9]*$")]
+    );
 
-  lowerLimitControl.setValidators(
-    [Validators.required, Validators.min(0), Validators.max(upperLimitControl.value), Validators.pattern("^[0-9]*$")]
-  );
+    lowerLimitControl.setValidators(
+      [Validators.required, Validators.min(0), Validators.max(upperLimitControl.value), Validators.pattern("^[0-9]*$")]
+    );
 
-  this.validateLimits(upperLimitControl, lowerLimitControl);
-}
-
-limitsError: boolean = false;
-validateLimits(upperLimitControl: any, lowerLimitControl: any): void{
-   if(upperLimitControl.value && lowerLimitControl.value){
-       this.limitsError = upperLimitControl.value < lowerLimitControl.value;
-    }
-}
+  }
 
   close(){
     this.diaglogRef.close()
