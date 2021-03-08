@@ -88,27 +88,15 @@ export class TreeComponent implements OnInit {
   }
 
   openNameDialog(factoryId?: number, currentName?: string) {
-      const dialogConfig = new MatDialogConfig();
+    const dialogConfig = new MatDialogConfig();
 
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        id: factoryId,
-        title: factoryId === undefined ? "Add Factory" : "Edit Factory",
-        currentName: currentName
-      };
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: factoryId,
+      currentName: currentName
+    };
 
-      const dialogRef = this.dialog.open(AddEditComponent, dialogConfig);
-
-      dialogRef.afterClosed().subscribe(result => {
-        this.dialogId = result?.id;
-        this.dialogName = result?.name;
-        
-        if (this.dialogId != null && this.dialogName != null) {
-          this.editFactory(this.dialogId, this.dialogName);
-        } else if (this.dialogName !== undefined) {
-          this.addFactory(this.dialogName);
-        };
-      });
+    this.dialog.open(AddEditComponent, dialogConfig);
   }
 
   openCollectInstructionsDialog(factoryId?: number, currentName?: string) {
@@ -123,20 +111,7 @@ export class TreeComponent implements OnInit {
     const dialogRef = this.dialog.open(CollectInstructionsComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
-      this.generatedParentId = result?.id;
-      this.instructions = result?.instructions;
-      
-      if (this.generatedParentId != null && this.dialogName != null) {
-        this.factoryService.generateChildren(this.generatedParentId, this.instructions).subscribe();
-      };
+      this.generatedParentId = result;
     });
-  }
-
-  addFactory(name: string){
-    this.factoryService.addFactory(name).subscribe();
-  }
-
-  editFactory(id: number, newName: string){
-    this.factoryService.editFactory(id, newName).subscribe();
   }
 }

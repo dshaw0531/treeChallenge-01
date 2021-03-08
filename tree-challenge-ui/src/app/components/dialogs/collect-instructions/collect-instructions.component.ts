@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenerationInstructions } from 'src/app/models/generation-instructions-model';
+import { FactoryService } from 'src/app/services/factory-service/factory.service';
 
 @Component({
   selector: 'app-collect-instructions',
@@ -17,6 +18,7 @@ export class CollectInstructionsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private diaglogRef: MatDialogRef<CollectInstructionsComponent>,
+    private factoryService: FactoryService,
     @Inject(MAT_DIALOG_DATA) data: any
     ) { 
       this.title = data.title,
@@ -59,7 +61,7 @@ export class CollectInstructionsComponent implements OnInit {
   }
 
   close(){
-    this.diaglogRef.close()
+    this.diaglogRef.close();
   }
 
   save() {
@@ -69,8 +71,10 @@ export class CollectInstructionsComponent implements OnInit {
       instructions.numberOfChildren = this.form.value.numberOfChildren;
       instructions.upperLimit = this.form.value.upperLimit;
       instructions.lowerLimit = this.form.value.lowerLimit;
+      
+      this.factoryService.generateChildren(this.factoryId, instructions).subscribe();
 
-      this.diaglogRef.close({ event: 'close', id: this.factoryId, instructions: instructions });
+      this.diaglogRef.close(this.factoryId);
     }
   }
 }
